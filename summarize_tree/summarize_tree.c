@@ -15,7 +15,14 @@ bool is_dir(const char* path) {
    * S_ISDIR to see if the file is a directory. Make sure you check the
    * return value from stat in case there is a problem, e.g., maybe the
    * the file doesn't actually exist.
+   *
    */
+	struct stat statbuf;
+	if (stat(path, &statbuf) != 0){
+		return false;
+	}
+	return S_ISDIR(statbuf.st_mode);
+		
 }
 
 /* 
