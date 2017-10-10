@@ -5,20 +5,20 @@
 
 #define BUF_SIZE 1024
 
-bool is_vowel(char c) {
- char vowels = {'a','e','i','o','u','A','E','I','O','U'};
+int is_vowel(char c) {
+ char vowels[11] = {'a','e','i','o','u','A','E','I','O','U','\0'};
  for (int i = 0; i < 10; i++){
  	if(c==vowels[i]){
-		return true;
+		return 1;
 	}
  }
- return false;
+ return 0;
 }
 
 int copy_non_vowels(int num_chars, char* in_buf, char* out_buf){
 	int copyCount = 0;
 	for (int i = 0; i<num_chars;i++){
- 		if(is_vowel(int_buf[i])){
+ 		if(is_vowel(in_buf[i])==1){
 			out_buf[copyCount] = in_buf[i];
 			copyCount++;	
 		}
@@ -29,13 +29,14 @@ int copy_non_vowels(int num_chars, char* in_buf, char* out_buf){
 void disemvowel(FILE* inputFile, FILE* outputFile) {
 	char* in_buf = calloc(BUF_SIZE, sizeof(char));
 	char* out_buf = calloc(BUF_SIZE, sizeof(char));
-	inFile = fopen(inputFile, "w+");
-	outFile = fopen(outputFile, "w+");
-	while(char c != '\0'){
-		
+	fopen(inputFile, "w+");
+	fopen(outputFile, "w+");
+	while(fgets(in_buf,sizeof(in_buf),inputFile)){
+		printf("%s\n",in_buf);
 	}
-	fwrite(
-	fwrite(inputFile,	
+	fread(in_buf, 1024, 1, inputFile);
+	
+	
 }
 
 
@@ -43,7 +44,7 @@ int main(int argc, char *argv[]) {
  FILE *inputFile;
  FILE *outputFile;
 
- disemvowel(inputFile, outputFile);
+//disemvowel(inputFile, outputFile);
  
  return 0;
 }
