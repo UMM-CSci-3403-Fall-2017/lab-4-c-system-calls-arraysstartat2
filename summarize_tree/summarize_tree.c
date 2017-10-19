@@ -31,7 +31,7 @@ bool is_dir(const char* path) {
  */
 int* process_path(const char*, int numDir, int numReg);
 
-void process_directory(const char* path, int numDir) {
+void process_directory(const char* path, int numDir, int numReg) {
   /*
    * Update the number of directories seen, use opendir() to open the
    * directory, and then use readdir() to loop through the entries
@@ -42,8 +42,27 @@ void process_directory(const char* path, int numDir) {
    * You'll also want to use chdir() to move into this new directory,
    * with a matching call to chdir() to move back out of it when you're
    * done.
-   */
+   */	DIR *dirp;
+	dirp = opendir(path);
+	struct dirent *entry;
 
+	if (is_dir(path)) {
+		numDir++;
+		opendir(path);
+		while(entry = readdir()){
+		if(entry->d_type==DT_DIR){
+			if (strcmp(entry ->d_name, ".") ==0|| strcmp(entry->d_name, "..")==0){
+				continue;
+			}
+		numDir++;
+		process_directory(path,numDir,numReg);
+	}
+	else {
+		process_file(path, numReg);
+	}
+		}
+	closedir(dirp);	
+	
 }
 
 void process_file(const char* path, int numReg) {
@@ -65,7 +84,7 @@ closedir(dirp);
 
 int* process_path(const char* path, int numDir, int numReg) {
   if (is_dir(path)) {
-    process_directory(path, numDir);
+    process_directory(path, numDir, numReg);
   } else {
     process_file(path, numReg);
   }
