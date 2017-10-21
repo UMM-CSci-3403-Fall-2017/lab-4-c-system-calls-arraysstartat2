@@ -18,9 +18,7 @@ bool is_dir(const char* path) {
    *
    */
 	struct stat statbuf;
-	if (stat(path, &statbuf) != 0){
-		return false;
-	}
+	stat(path, &statbuf);
 	return S_ISDIR(statbuf.st_mode);
 		
 }
@@ -29,9 +27,20 @@ bool is_dir(const char* path) {
  * I needed this because the multiple recursion means there's no way to
  * order them so that the definitions all precede the cause.
  */
-int* process_path(const char*, int numDir, int numReg);
+void process_path(const char*);
 
-void process_directory(const char* path, int numDir, int numReg) {
+
+void process_file(const char* path) {
+  /*
+   * Update the number of regular files.
+   */
+                num_regular++;
+		
+
+}
+
+
+void process_directory(const char* path) {
   /*
    * Update the number of directories seen, use opendir() to open the
    * directory, and then use readdir() to loop through the entries
@@ -44,55 +53,37 @@ void process_directory(const char* path, int numDir, int numReg) {
    * done.
    */	DIR *dirp;
 	dirp = opendir(path);
+	chdir(path);
 	struct dirent *entry;
+	entry = readdir(dirp);
 
-	if (is_dir(path)) {
-		numDir++;
-		opendir(path);
-		while(entry = readdir()){
-		if(entry->d_type==DT_DIR){
-			if (strcmp(entry ->d_name, ".") ==0|| strcmp(entry->d_name, "..")==0){
-				continue;
+		while(entry != NULL){
+			//printf("%s\n","gotIntoWhile");
+			if (strcmp(entry ->d_name, ".") !=0&& strcmp(entry->d_name, "..")!=0){
+				process_path(entry->d_name);
+
 			}
-		numDir++;
-		process_directory(path,numDir,numReg);
+			
+		//printf("The number of directories is %d.\n", num_dirs); 
+		entry = readdir(dirp);
 	}
-	else {
-		process_file(path, numReg);
-	}
-		}
+	num_dirs++;
+        chdir("..");
 	closedir(dirp);	
 	
 }
 
-void process_file(const char* path, int numReg) {
-  /*
-   * Update the number of regular files.
-   */
-DIR* dirp;
-dirp = opendir(path);
-struct dirent * entry;
 
-while((entry = readir(dirp)) != NULL) {
-	if (entry -> d_type == DT_REG) {
-		numReg++;
-	}
-}
-closedir(dirp);
-	
-}
-
-int* process_path(const char* path, int numDir, int numReg) {
+void process_path(const char* path) {
   if (is_dir(path)) {
-    process_directory(path, numDir, numReg);
+    process_directory(path);
   } else {
-    process_file(path, numReg);
+    process_file(path);
   }
-  int* returnArr = {numDir, numReg};
-  return returnArr;
+  
 }
 
-int main (int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
   // Ensure an argument was provided.
   if (argc != 2) {
     printf ("Usage: %s <path>\n", argv[0]);
@@ -102,13 +93,13 @@ int main (int argc, char *argv[]) {
 
   num_dirs = 0;
   num_regular = 0;
-  int* returnArr;
-  returnArr = process_path(argv[1], num_dirs, num_regular);
+  process_path(argv[1]);
 
-  printf_ISDIR(statbuf.st_mode);
+  
+  
 
-("There were %d directories.\n", returnArr[0]);
-  printf("There were %d regular files.\n", returnArr[1]);
+  printf("There were %d directories.\n", num_dirs);
+  printf("There were %d regular files.\n", num_regular);
 
   return 0;
 }
