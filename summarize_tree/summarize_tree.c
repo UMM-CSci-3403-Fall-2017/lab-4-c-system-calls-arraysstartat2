@@ -58,16 +58,18 @@ void process_directory(const char* path) {
 	entry = readdir(dirp);
 
 		while(entry != NULL){
-			//printf("%s\n","gotIntoWhile");
+		
 			if (strcmp(entry ->d_name, ".") !=0&& strcmp(entry->d_name, "..")!=0){
+				//This recursively calls process_path so long as a . or .. directory is not being looked at.
 				process_path(entry->d_name);
 
 			}
 			
-		//printf("The number of directories is %d.\n", num_dirs); 
+		//This updates the current directory for recursion.	
 		entry = readdir(dirp);
 	}
 	num_dirs++;
+	// Goes a directory up once the recursive step is complete
         chdir("..");
 	closedir(dirp);	
 	

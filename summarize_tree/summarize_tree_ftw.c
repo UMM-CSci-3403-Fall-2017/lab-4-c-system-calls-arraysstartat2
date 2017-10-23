@@ -8,7 +8,7 @@ int fileCount = 0;
 //function to be recursed in the ftw command, and increments the file and directory variables, and returns 0 to ensure error is not read into ftw.
 static int callback(const char *fpath, const struct stat *sb, int typeflag) {
 	
-        	
+        //The typeflag argument is an int that has several possible values. The FTW_D being for type directory, and FTW_F being for file. Essentially, the respective global count variable is incremented depending on what is found.	
 	if(typeflag==FTW_D){
 		dirCount++;
 		return 0; 		
