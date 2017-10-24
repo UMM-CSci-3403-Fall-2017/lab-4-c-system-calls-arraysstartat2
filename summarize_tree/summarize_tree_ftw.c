@@ -24,7 +24,12 @@ static int callback(const char *fpath, const struct stat *sb, int typeflag) {
 
 //method that runs ftw to recursively call callback for each folder in the directory given.
 int main(int argc, char** argv) {
-
+	// Ensure an argument was provided.
+	if(argc != 2){
+		printf("Usage: %s <path>\n", argv[0]);
+		printf("	where <path> is the file or root of the tree you want to summarize. \n");
+		return 1;
+	}
 	ftw(argv[1], callback, MAX_FTW_DEPTH);
 	printf("Processed all the files from %s. \n",argv[1]);
 	printf("There were %d directories. \n",dirCount);
